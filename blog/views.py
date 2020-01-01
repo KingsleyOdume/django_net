@@ -62,11 +62,3 @@ class CommentViewset(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     def get_queryset(self):
         return Comment.objects.all()
-
-# @csrf_exempt
-# def create_comment(request):
-#     if request.method == "POST":
-#         comment = request.POST.get('comment')
-#         user = request.user
-#         json = Comment.objects.create(comment=comment, created_by=user)
-#         return JsonResponse(json)
