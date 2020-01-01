@@ -4,6 +4,8 @@ from .models import MyPost
 from .models import Comment
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework import viewsets
+from .serializers import CommentSerializer
 
 
 def newsfeed(request):
@@ -56,21 +58,15 @@ def timeline_friends(request):
 def newsfeed_images(request):
     return render(request, 'blog/newsfeed_images.html')
 
+class CommentViewset(viewsets.ModelViewSet):
+    serializer_class = CommentSerializer
+    def get_queryset(self):
+        return Comment.objects.all()
 
-def comment(request):
-    comments = Comment.objects.all()
-    data = {"results": list(comments.values("comment", "created_by"))}
-    return JsonResponse(data)
-
-
-@csrf_exempt
-def create_comment(request):
-    if request.method == "POST":
-        data = request.body.decode("utf-8").split("&")
-        comment = data[0].split("=")
-        user = data[1].split("=")
-        print(comment.join(), "***************************8?????????????????????????")
-        # print(user[1], "***************************8?????????????????????????")
-        data_body = {comment: comment[1], user: user[1]}
-        json = Comment.objects.create({comment[1], user[1]})
-        return JsonResponse(json)
+# @csrf_exempt
+# def create_comment(request):
+#     if request.method == "POST":
+#         comment = request.POST.get('comment')
+#         user = request.user
+#         json = Comment.objects.create(comment=comment, created_by=user)
+#         return JsonResponse(json)
